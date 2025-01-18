@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverb Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      height: 8vh;
+      background-color: #fc4445;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 92vh;
+      background: linear-gradient(to right, #cafafe, #3feee6);
+      padding-bottom: 15vh;
+    }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-bottom: 15vh;
+    }
+
+    .table-container {
+      display: flex;
+      justify-content: center;
+      width: 800px;
+      max-width: 80%;
+      padding: 3rem;
+      background-color: #97caef;
+      border-radius: 10px;
+      box-shadow: 5px 5px 15px 0px #000000;
+    }
+
+    #table {
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 1em;
+      width: 700px;
+      max-width: 70vw;
+    }
+
+    #table th,
+    #table td {
+      padding: 5px;
+      border-bottom: 1px solid rgba(128, 128, 128, 0.6);
+      border-right: 1px solid rgba(128, 128, 128, 0.6);
+    }
+
+    #table thead,
+    tr:nth-of-type(even) {
+      background-color: rgba(63, 238, 230, 0.4);
+    }
+
+    .copy-btn {
+      margin-left: 10px;
+      cursor: pointer;
+      background-color: #3feee6;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.9em;
+      display: none;
+    }
+
+    .copy-btn:hover {
+      background-color: #cafafe;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Reverb calculator</h1>
+  </header>
+
+  <div class="container">
+    <div class="input-container">
+      <input id="input" type="number" placeholder="Enter your BPM">
+    </div>
+    <div class="table-container">
+      <table id="table">
+        <thead>
+          <tr>
+            <th>Reverb Size</th>
+            <th>Pre-Delay</th>
+            <th>Decay Time</th>
+            <th>Total Reverb</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hall</td>
+            <td><span id="hall-pd"></span><button class="copy-btn" data-target="hall-pd">Copy</button></td>
+            <td><span id="hall-dt"></span><button class="copy-btn" data-target="hall-dt">Copy</button></td>
+            <td><span id="hall-total"></span><button class="copy-btn" data-target="hall-total">Copy</button></td>
+          </tr>
+          <tr>
+            <td>Big Room</td>
+            <td><span id="big-pd"></span><button class="copy-btn" data-target="big-pd">Copy</button></td>
+            <td><span id="big-dt"></span><button class="copy-btn" data-target="big-dt">Copy</button></td>
+            <td><span id="big-total"></span><button class="copy-btn" data-target="big-total">Copy</button></td>
+          </tr>
+          <tr>
+            <td>Small Room</td>
+            <td><span id="small-pd"></span><button class="copy-btn" data-target="small-pd">Copy</button></td>
+            <td><span id="small-dt"></span><button class="copy-btn" data-target="small-dt">Copy</button></td>
+            <td><span id="small-total"></span><button class="copy-btn" data-target="small-total">Copy</button></td>
+          </tr>
+          <tr>
+            <td>Tight Ambience</td>
+            <td><span id="tight-pd"></span><button class="copy-btn" data-target="tight-pd">Copy</button></td>
+            <td><span id="tight-dt"></span><button class="copy-btn" data-target="tight-dt">Copy</button></td>
+            <td><span id="tight-total"></span><button class="copy-btn" data-target="tight-total">Copy</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const bpmInput = document.getElementById('input');
+      const copyButtons = document.querySelectorAll('.copy-btn');
+
+      bpmInput.addEventListener('input', () => {
+        const bpmValue = parseFloat(bpmInput.value);
+
+        if (bpmValue > 0) {
+          calculateReverb(bpmValue);
+          copyButtons.forEach(button => button.style.display = 'inline-block');
+        } else {
+          clearValues();
+          copyButtons.forEach(button => button.style.display = 'none');
+        }
+      });
+
+      function calculateReverb(bpm) {
+        setValues('hall', bpm, 8, 64);
+        setValues('big', bpm, 4, 64);
+        setValues('small', bpm, 2, 64);
+        setValues('tight', bpm, 1, 128);
+      }
+
+      function setValues(prefix, bpm, multiplier, divisor) {
+        const totalCalc = (60000 / bpm) * multiplier;
+        const preDelayCalc = totalCalc / divisor;
+        const decayCalc = (totalCalc - preDelayCalc) / 1000;
+
+        document.getElementById(`${prefix}-total`).innerText = `${totalCalc.toFixed(2)} ms`;
+        document.getElementById(`${prefix}-pd`).innerText = `${preDelayCalc.toFixed(2)} ms`;
+        document.getElementById(`${prefix}-dt`).innerText = `${decayCalc.toFixed(5)} s`;
+      }
+
+      function clearValues() {
+        ['hall', 'big', 'small', 'tight'].forEach(prefix => {
+          document.getElementById(`${prefix}-total`).innerText = '';
+          document.getElementById(`${prefix}-pd`).innerText = '';
+          document.getElementById(`${prefix}-dt`).innerText = '';
+        });
+      }
+
+      document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-target');
+          const value = document.getElementById(targetId).innerText;
+          if (value) {
+            navigator.clipboard.writeText(value);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
