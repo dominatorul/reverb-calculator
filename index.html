@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reverb Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -17,82 +17,101 @@
 
     body {
       height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(to right, #0A0F1E, #1E2A3A);
+      color: white;
     }
 
     header {
       text-align: center;
-      height: 8vh;
-      background-color: #fc4445;
+      padding: 1rem;
+      background: #4B6CB7;
+      font-size: 1.8rem;
+      font-weight: bold;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .container {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 92vh;
-      background: linear-gradient(to right, #cafafe, #3feee6);
-      padding-bottom: 15vh;
+      padding: 2rem;
     }
 
     .input-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      padding-bottom: 15vh;
+      margin-bottom: 2rem;
+    }
+
+    .input-container input {
+      padding: 10px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+      width: 200px;
+      outline: none;
+      background: #222E50;
+      color: white;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .table-container {
-      display: flex;
-      justify-content: center;
-      width: 800px;
-      max-width: 80%;
-      padding: 3rem;
-      background-color: #97caef;
+      width: 80%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
-      box-shadow: 5px 5px 15px 0px #000000;
+      padding: 2rem;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     #table {
+      width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 1em;
-      width: 700px;
-      max-width: 70vw;
     }
 
     #table th,
     #table td {
-      padding: 5px;
-      border-bottom: 1px solid rgba(128, 128, 128, 0.6);
-      border-right: 1px solid rgba(128, 128, 128, 0.6);
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    #table thead,
-    tr:nth-of-type(even) {
-      background-color: rgba(63, 238, 230, 0.4);
+    #table thead {
+      background: rgba(75, 108, 183, 0.4);
     }
 
     .copy-btn {
       margin-left: 10px;
-      cursor: pointer;
-      background-color: #3feee6;
+      padding: 5px 10px;
+      font-size: 0.9rem;
       border: none;
-      padding: 3px 8px;
       border-radius: 5px;
-      font-size: 0.9em;
+      background: #4B6CB7;
+      color: white;
+      cursor: pointer;
       display: none;
     }
 
     .copy-btn:hover {
-      background-color: #cafafe;
+      background: #3a5490;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #4B6CB7;
+      font-size: 1rem;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>Reverb calculator</h1>
+    Reverb Calculator
   </header>
 
   <div class="container">
@@ -106,7 +125,6 @@
             <th>Reverb Size</th>
             <th>Pre-Delay</th>
             <th>Decay Time</th>
-            <th>Total Reverb</th>
           </tr>
         </thead>
         <tbody>
@@ -114,25 +132,21 @@
             <td>Hall</td>
             <td><span id="hall-pd"></span><button class="copy-btn" data-target="hall-pd">Copy</button></td>
             <td><span id="hall-dt"></span><button class="copy-btn" data-target="hall-dt">Copy</button></td>
-            <td><span id="hall-total"></span><button class="copy-btn" data-target="hall-total">Copy</button></td>
           </tr>
           <tr>
             <td>Big Room</td>
             <td><span id="big-pd"></span><button class="copy-btn" data-target="big-pd">Copy</button></td>
             <td><span id="big-dt"></span><button class="copy-btn" data-target="big-dt">Copy</button></td>
-            <td><span id="big-total"></span><button class="copy-btn" data-target="big-total">Copy</button></td>
           </tr>
           <tr>
             <td>Small Room</td>
             <td><span id="small-pd"></span><button class="copy-btn" data-target="small-pd">Copy</button></td>
             <td><span id="small-dt"></span><button class="copy-btn" data-target="small-dt">Copy</button></td>
-            <td><span id="small-total"></span><button class="copy-btn" data-target="small-total">Copy</button></td>
           </tr>
           <tr>
             <td>Tight Ambience</td>
             <td><span id="tight-pd"></span><button class="copy-btn" data-target="tight-pd">Copy</button></td>
             <td><span id="tight-dt"></span><button class="copy-btn" data-target="tight-dt">Copy</button></td>
-            <td><span id="tight-total"></span><button class="copy-btn" data-target="tight-total">Copy</button></td>
           </tr>
         </tbody>
       </table>
@@ -142,8 +156,8 @@
   <footer>
     &copy; 2025 Dominatorul
   </footer>
-  
-<script>
+
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       const bpmInput = document.getElementById('input');
       const copyButtons = document.querySelectorAll('.copy-btn');
@@ -172,14 +186,12 @@
         const preDelayCalc = totalCalc / divisor;
         const decayCalc = (totalCalc - preDelayCalc) / 1000;
 
-        document.getElementById(`${prefix}-total`).innerText = `${totalCalc.toFixed(2)} ms`;
         document.getElementById(`${prefix}-pd`).innerText = `${preDelayCalc.toFixed(2)} ms`;
         document.getElementById(`${prefix}-dt`).innerText = `${decayCalc.toFixed(5)} s`;
       }
 
       function clearValues() {
         ['hall', 'big', 'small', 'tight'].forEach(prefix => {
-          document.getElementById(`${prefix}-total`).innerText = '';
           document.getElementById(`${prefix}-pd`).innerText = '';
           document.getElementById(`${prefix}-dt`).innerText = '';
         });
